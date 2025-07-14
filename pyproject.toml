@@ -1,0 +1,10 @@
+[project]
+name = "test-module"
+version = "0.1.0"
+description = "Simple test module with testbench"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "cocotb>=1.9.2",
+    "pytest>=8.4.1",
+]
