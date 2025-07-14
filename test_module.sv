@@ -21,29 +21,26 @@ module test_module
 
   logic [(DATA_W - 1) : 0] data_buf [(ARRAY_SIZE - 1) : 0];
   logic [(ARRAY_SIZE - 1) : 0] data_buf_valid;
-
   logic [(ARRAY_SIZE - 1) : 0] is_equal;
   logic [(ARRAY_SIZE - 1) : 0] should_shift;
 
-  // looking if equal data already exists
+  // ищем совпадения входных данных с сохраненными
   always_comb begin
     for (int i=0; i < ARRAY_SIZE; i++) begin
       is_equal[i] = (data_in == data_buf[i] && data_buf_valid[i] == 1'b1) ? 1'b1 : 1'b0;
     end
   end
 
-  // selects which parts of the vector should be shifted
-  // transforms 0001 -> 0001,  0010 -> 0011, 0100 -> 0111, 1000 -> 1111, 0000 -> 1111
+  // выбираем какую часть регистров перезаписать
+  // эквивалент преобразования 0001 -> 0001,  0010 -> 0011, 0100 -> 0111, 1000 -> 1111, 0000 -> 1111
   assign should_shift = is_equal | (is_equal - 1);
 
-
-  // conditional shift register
+  // сдвиговый регистр с условием, сдвигает данные отмеченные should_shift
   always_ff @(posedge clk_in) begin
     if (reset_in) begin
       data_buf_valid <= 0;
       data_buf <= '{default: 0};
     end else begin
-
       data_buf[0] <= data_in;
       data_buf_valid[0] <= 1'b1;
 

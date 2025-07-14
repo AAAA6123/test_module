@@ -35,7 +35,8 @@ tb_data.append({ "test_data" : [11, 22, 33, 44, 55], "golden_output" : [44, 33, 
 tb_data.append({ "test_data" : [1, 2, 3, 2, 1], "golden_output" : [2, 3, 1] })
 tb_data.append({ "test_data" : [255, 254, 253, 252, 251], "golden_output" : [252, 253, 254, 255] })
 
-# helper functions
+
+# вспомогательные функции
 async def send_data(clk, input, data):
   for value in data:
     input.value = value
