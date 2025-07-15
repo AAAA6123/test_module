@@ -79,7 +79,7 @@ def test_test_module():
   hdl_toplevel = "test_module"
   py_test_module = "test_module_tb,"
 
-  proj_path = Path(__file__).resolve().parent.parent
+  proj_path = Path(__file__).resolve().parent
   verilog_sources = [proj_path / "test_module.sv"]
 
   runner = get_runner(simulator)
