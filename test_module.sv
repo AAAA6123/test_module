@@ -19,15 +19,29 @@ module test_module
 
   localparam ARRAY_SIZE = 4;
 
+  logic [(DATA_W - 1) : 0] data_in_reg;
+  logic data_in_reg_valid;
+
   logic [(DATA_W - 1) : 0] data_buf [(ARRAY_SIZE - 1) : 0];
   logic [(ARRAY_SIZE - 1) : 0] data_buf_valid;
   logic [(ARRAY_SIZE - 1) : 0] is_equal;
   logic [(ARRAY_SIZE - 1) : 0] should_shift;
 
+
+  always_ff @(posedge clk_in) begin
+    if (reset_in) begin
+      data_in_reg <= 0;
+      data_in_reg_valid <= 0;
+    end else begin
+      data_in_reg <= data_in;
+      data_in_reg_valid <= 1'b1;
+    end
+  end
+
   // ищем совпадения входных данных с сохраненными
   always_comb begin
     for (int i=0; i < ARRAY_SIZE; i++) begin
-      is_equal[i] = (data_in == data_buf[i] && data_buf_valid[i] == 1'b1) ? 1'b1 : 1'b0;
+      is_equal[i] = (data_in_reg == data_buf[i] && data_buf_valid[i] == 1'b1) ? 1'b1 : 1'b0;
     end
   end
 
@@ -38,11 +52,11 @@ module test_module
   // сдвиговый регистр с условием, сдвигает данные отмеченные should_shift
   always_ff @(posedge clk_in) begin
     if (reset_in) begin
-      data_buf_valid <= 0;
       data_buf <= '{default: 0};
+      data_buf_valid <= 0;
     end else begin
-      data_buf[0] <= data_in;
-      data_buf_valid[0] <= 1'b1;
+      data_buf[0] <= data_in_reg;
+      data_buf_valid[0] <= data_in_reg_valid;
 
       for (int i = 1; i < ARRAY_SIZE; i=i+1) begin
         if (should_shift[i] == 1'b1) begin

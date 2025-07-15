@@ -61,6 +61,7 @@ async def run_tb(dut, tb_data):
   dut.reset_in.value = 0
 
   await send_data(clk, dut.data_in, tb_data["test_data"])
+  await RisingEdge(clk)
   output = await read_outputs(dut)
 
   assert tb_data["golden_output"] == output, "Mismatch between output data and expected data"
